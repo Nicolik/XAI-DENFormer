@@ -29,7 +29,8 @@ The code expects a data directory with subfolders for genomes, CD-HIT outputs, s
 export DENFORMER_DATA_DIR=/path/to/data
 ```
 
-If the variable is not set, the public version falls back to a local `data/` directory. The private/local version may contain machine-specific path logic for the development environment.
+If the variable is not set, the public version falls back to a local `data/` directory.
+Local deployments can customize paths by setting DENFORMER_DATA_DIR or by adapting paths.py.
 
 ## Installation
 
