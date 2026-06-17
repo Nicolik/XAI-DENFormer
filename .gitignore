@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Local configuration
+.env
+
+# Data and generated outputs
+data/
+logs/
+outputs/
+runs/
+checkpoints/
+project_scripts.zip
+*.npy
+*.npz
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.h5
+*.hdf5
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/

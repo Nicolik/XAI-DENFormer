@@ -205,4 +205,3 @@ If you use this repository for research, please cite the associated paper. The c
 ## License
 
 This project is released under the GNU General Public License v3.0. See [`LICENSE`](LICENSE) for details.
-# XAI-DENFormer

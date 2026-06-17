@@ -1,0 +1,33 @@
+name: denformer
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.10
+  - pytorch=2.5.1
+  - torchvision=0.20.1
+  - torchaudio=2.5.1
+  - pytorch-cuda=12.4
+  - biopython
+  - pandas
+  - matplotlib
+  - scikit-learn
+  - numpy
+  - h5py
+  - tqdm
+  - tensorboard
+  - country_converter
+  - seaborn
+  - opencv
+  - umap-learn
+  - scipy
+  - statsmodels
+  - openpyxl
+  - cd-hit
+  - mafft
+  - pip
+  - pip:
+      - transformers
+      - performer-pytorch
