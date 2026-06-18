@@ -141,7 +141,7 @@ The classifier workflow is implemented in:
 classifier/workflow/
 ```
 
-The main orchestrator is:
+Run the main workflow with:
 
 ```bash
 python classifier/workflow/scripts/00_run_workflow.py
@@ -153,19 +153,19 @@ Before running it, configure the experiment flags and model/split settings in:
 classifier/workflow/workflow.py
 ```
 
-The workflow can run or aggregate:
+The workflow supports the following analysis steps:
 
 - model training;
 - standard inference;
 - attention extraction;
-- attention aggregation and genomic-region panels;
+- attention profile aggregation and genomic-region panels;
 - gradient × input attribution;
 - XAI embedding projections;
 - strategy-consensus XAI panels;
 - overall XAI profiles;
-- optional report-generation steps.
+- optional quantitative report generation.
 
-The scripts in `classifier/workflow/scripts/` are numbered according to their position in the workflow. The report scripts live separately in `classifier/workflow/reports/`.
+Scripts in `classifier/workflow/scripts/` follow the main workflow order, while scripts in `classifier/workflow/reports/` generate quantitative reports and paper-level summary figures.
 
 ## Reports and paper figures
 
@@ -175,13 +175,7 @@ Run all quantitative reports with:
 python classifier/workflow/reports/run_reports.py --summary median --error-bar minmax --result-table-percent
 ```
 
-Alternative summary settings:
-
-```bash
-python classifier/workflow/reports/run_reports.py --summary mean --error-bar std --result-table-percent
-```
-
-Individual report entry points:
+Reports can also be generated individually:
 
 ```bash
 python classifier/workflow/reports/make_confmat.py
@@ -189,9 +183,9 @@ python classifier/workflow/reports/make_metrics.py --summary median --error-bar 
 python classifier/workflow/reports/make_model_tradeoff.py --summary median --error-bar minmax
 ```
 
-## Smoke tests
+## Installation check
 
-After installation, the following checks should run without requiring the full dataset:
+After installation, the following commands can be used to verify that the main modules are importable and that the command-line entry points are available:
 
 ```bash
 python -m compileall -q classifier cdhit dataset msa paths.py
@@ -201,7 +195,7 @@ python -m classifier.workflow.reports.run_reports --help
 
 ## Citation
 
-If you use this repository for research, please cite the associated paper. The citation will be added here once the manuscript/preprint record is available.
+If you use this repository for research, please cite the associated paper.
 
 ## License
 
