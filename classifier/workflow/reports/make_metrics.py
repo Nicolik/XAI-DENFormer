@@ -1575,7 +1575,7 @@ def build_results_template_rows(output_tables, group_name, summary_mode, as_perc
     numeric_columns = [
         "model", "model_display", "experiment", "experiment_title",
         "split_strategy", "fold_index", "fold",
-        "Acc", "DENV1", "DENV2", "DENV3", "DENV4",
+        "Accuracy", "DENV1", "DENV2", "DENV3", "DENV4",
     ]
     numeric_df = pd.DataFrame(numeric_rows, columns=numeric_columns)
     summary_df = pd.DataFrame(summary_rows, columns=RESULT_TABLE_COLUMNS)
