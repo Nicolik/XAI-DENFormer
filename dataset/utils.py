@@ -30,7 +30,12 @@ def normalize_country(country):
     return config.COUNTRY_ALIASES.get(country, country)
 
 
-def extract_serotype(header, fallback):
+def extract_serotype(header, fallback=None):
+    """Extract a serotype-like token from an unstructured FASTA header.
+
+    Header-derived values are diagnostic metadata only. The canonical class label
+    is always the serotype-specific FASTA assignment supplied by the caller.
+    """
     for pattern in (r"DENV(\d)", r"hDenV(\d)"):
         match = re.search(pattern, header, flags=re.IGNORECASE)
         if match:
@@ -64,10 +69,17 @@ def parse_fasta_serotype(filename, serotype_from_filename, start_index=None, inc
 
     for record in SeqIO.parse(str(filename), "fasta"):
         header = record.description
+        header_serotype = extract_serotype(header)
         row = {
             "File": os.path.basename(str(filename)),
             "Header": header,
-            "Serotype": extract_serotype(header, serotype_from_filename),
+            # Canonical label: identical to the source used by 01_run_ohe.py.
+            "Serotype": serotype_from_filename,
+            # Diagnostic fields: never used as class labels.
+            "HeaderSerotype": header_serotype if header_serotype is not None else "Unknown",
+            "SerotypeHeaderConflict": bool(
+                header_serotype is not None and header_serotype != serotype_from_filename
+            ),
         }
 
         if current_index is not None:

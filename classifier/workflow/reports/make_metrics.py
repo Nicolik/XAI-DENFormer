@@ -1673,6 +1673,151 @@ def save_results_template_excel(output_tables, group_name, out_path, summary_mod
         except ImportError:
             pass
 
+
+
+def build_results_template_split_type_rows(
+    output_tables,
+    group_name,
+    experiment_name,
+    as_percent=False,
+):
+    """Build one manuscript-ready fold table for a single validation protocol."""
+    columns = ["Model", "Fold", "Accuracy", "DENV1", "DENV2", "DENV3", "DENV4"]
+    rows = []
+
+    for model in COMPARISON_GROUPS[group_name]:
+        tables = output_tables.get((experiment_name, group_name))
+        if tables is None:
+            continue
+
+        fold_df = tables["fold_values"]
+        if fold_df.empty or model not in set(fold_df["model"]):
+            continue
+
+        labeled = add_fold_labels(fold_df[fold_df["model"] == model], experiment_name)
+        if labeled.empty:
+            continue
+
+        wide = labeled.pivot_table(
+            index=["fold_index", "fold_label"],
+            columns="metric",
+            values="value",
+            aggfunc="first",
+        ).reset_index()
+        wide.columns.name = None
+        wide = wide.sort_values("fold_index")
+
+        for row_index, (_, row) in enumerate(wide.iterrows()):
+            output_row = {
+                "Model": display_model_name(model) if row_index == 0 else "",
+                "Fold": row["fold_label"],
+            }
+            for metric, output_column in RESULT_TABLE_METRIC_COLUMNS.items():
+                value = row.get(metric, np.nan)
+                value = float(value) if np.isfinite(value) else np.nan
+                output_row[output_column] = format_result_metric_value(
+                    value,
+                    as_percent=as_percent,
+                )
+            rows.append(output_row)
+
+    return pd.DataFrame(rows, columns=columns)
+
+
+def _apply_results_template_split_type_style(workbook, sheet_name):
+    """Style a single-protocol worksheet with the manuscript table layout."""
+    try:
+        from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+        from openpyxl.utils import get_column_letter
+    except ImportError:
+        return
+
+    if sheet_name not in workbook.sheetnames:
+        return
+
+    worksheet = workbook[sheet_name]
+    worksheet.insert_rows(2)
+
+    worksheet["D1"] = "F1 Score"
+    for cell in ("E1", "F1", "G1"):
+        worksheet[cell] = None
+    worksheet.merge_cells("D1:G1")
+
+    for column in ("A", "B", "C"):
+        worksheet.merge_cells(f"{column}1:{column}2")
+
+    worksheet["D2"] = "DENV1"
+    worksheet["E2"] = "DENV2"
+    worksheet["F2"] = "DENV3"
+    worksheet["G2"] = "DENV4"
+
+    header_fill = PatternFill("solid", fgColor="D9EAF7")
+    subheader_fill = PatternFill("solid", fgColor="EAF3F8")
+    thin = Side(style="thin", color="B7B7B7")
+    border = Border(left=thin, right=thin, top=thin, bottom=thin)
+
+    for row in worksheet.iter_rows(min_row=1, max_row=2, min_col=1, max_col=7):
+        for cell in row:
+            cell.font = Font(bold=True)
+            cell.alignment = Alignment(
+                horizontal="center",
+                vertical="center",
+                wrap_text=True,
+            )
+            cell.fill = header_fill if cell.row == 1 else subheader_fill
+            cell.border = border
+
+    for row in worksheet.iter_rows(min_row=3, max_row=worksheet.max_row, min_col=1, max_col=7):
+        for cell in row:
+            cell.alignment = Alignment(
+                horizontal="center",
+                vertical="center",
+                wrap_text=True,
+            )
+            cell.border = border
+
+    for column_index, width in enumerate([20, 18, 12, 12, 12, 12, 12], start=1):
+        worksheet.column_dimensions[get_column_letter(column_index)].width = width
+
+    worksheet.freeze_panes = "A3"
+    worksheet.auto_filter.ref = f"A2:G{worksheet.max_row}"
+    worksheet.sheet_view.showGridLines = False
+    worksheet.page_setup.orientation = "landscape"
+    worksheet.page_setup.fitToWidth = 1
+    worksheet.page_setup.fitToHeight = 0
+    worksheet.sheet_properties.pageSetUpPr.fitToPage = True
+    worksheet.print_title_rows = "1:2"
+
+
+def save_results_template_split_type_excel(
+    output_tables,
+    group_name,
+    out_path,
+    as_percent=False,
+):
+    """Export fold-level results to one worksheet per validation protocol."""
+    sheet_experiments = [
+        ("Geographical", "ohe_continent_e100"),
+        ("Temporal", "ohe_timebin_e100"),
+        ("CD-HIT", "ohe_cdhit_e100"),
+    ]
+
+    with pd.ExcelWriter(out_path, engine="openpyxl") as writer:
+        written_sheets = []
+        for sheet_name, experiment_name in sheet_experiments:
+            table = build_results_template_split_type_rows(
+                output_tables,
+                group_name,
+                experiment_name,
+                as_percent=as_percent,
+            )
+            table.to_excel(writer, sheet_name=sheet_name, index=False)
+            written_sheets.append(sheet_name)
+
+        workbook = writer.book
+        for sheet_name in written_sheets:
+            _apply_results_template_split_type_style(workbook, sheet_name)
+
 def display_model_name(model_name):
     return DISPLAY_NAMES.get(model_name, model_name)
 
@@ -2485,6 +2630,22 @@ def main():
             recap_results_template_path = result_tables_recap_dir / results_template_excel_path.name
             shutil.copy2(results_template_excel_path, recap_results_template_path)
             print(f"Saved: {recap_results_template_path}")
+
+        if group_name == "all_models":
+            split_type_excel_path = (
+                manuscript_stats_dir / "results_template_all_models_split_type.xlsx"
+            )
+            save_results_template_split_type_excel(
+                output_tables,
+                group_name,
+                split_type_excel_path,
+                as_percent=result_table_as_percent,
+            )
+            if split_type_excel_path.exists():
+                print(f"Saved: {split_type_excel_path}")
+                recap_split_type_path = result_tables_recap_dir / split_type_excel_path.name
+                shutil.copy2(split_type_excel_path, recap_split_type_path)
+                print(f"Saved: {recap_split_type_path}")
 
         dotplot_panel_path = dotplot_dir / f"all_protocols_{group_name}_metrics_dotplot_panel.png"
         save_dotplot_panel(

@@ -80,14 +80,29 @@ def load_pivot(csv_path: Path) -> pd.DataFrame:
 
 def load_serotype_counts(stats_dir: Path) -> pd.Series:
     counts_path = stats_dir / "dengue_serotype_counts.csv"
-    if counts_path.exists():
-        counts = pd.read_csv(counts_path, sep=";", index_col=0).iloc[:, 0]
-        return counts.reindex(config.SEROTYPES, fill_value=0)
+    require_file(counts_path)
+    counts = pd.read_csv(counts_path, sep=";", index_col=0).iloc[:, 0]
+    return counts.reindex(config.SEROTYPES, fill_value=0).astype(int)
 
-    records_path = stats_dir / "dengue_geographical_distribution_records.csv"
-    require_file(records_path)
-    records = pd.read_csv(records_path, sep=";")
-    return records["Serotype"].value_counts().reindex(config.SEROTYPES, fill_value=0)
+
+def validate_panel_totals(canonical_counts: pd.Series, bar_pivots) -> None:
+    failures = []
+    for panel_label, title, pivot, _ in bar_pivots:
+        totals = pivot.sum(axis=0).reindex(config.SEROTYPES, fill_value=0).astype(int)
+        if not totals.equals(canonical_counts):
+            comparison = pd.DataFrame({
+                "canonical": canonical_counts,
+                f"panel_{panel_label}": totals,
+            })
+            comparison["difference"] = comparison.iloc[:, 1] - comparison.iloc[:, 0]
+            failures.append(f"Panel {panel_label} ({title}):\n{comparison}")
+
+    if failures:
+        raise ValueError(
+            "Figure 2 serotype totals are inconsistent. Regenerate the affected inputs.\n\n"
+            + "\n\n".join(failures)
+        )
+    print("Figure 2 A-D serotype consistency check: PASSED")
 
 
 def autopct_factory(counts: pd.Series):
@@ -119,8 +134,6 @@ def draw_pie(ax, counts: pd.Series) -> None:
     for text in autotexts:
         text.set_color("white")
 
-    # Move the smallest serotype annotation slightly upward so it does not sit
-    # too close to the neighboring DENV3 label in the pie chart.
     if len(autotexts) > 0:
         smallest_idx = int(counts.to_numpy().argmin())
         x, y = autotexts[smallest_idx].get_position()
@@ -182,6 +195,8 @@ def main() -> None:
     for panel_label, title, csv_path_fn, rotation in BAR_PANEL_SPECS:
         pivot = load_pivot(csv_path_fn(stats_dir))
         bar_pivots.append((panel_label, title, pivot, rotation))
+
+    validate_panel_totals(counts, bar_pivots)
 
     max_bar_total = max(float(pivot.sum(axis=1).max()) for _, _, pivot, _ in bar_pivots)
     shared_ylim = max_bar_total * 1.10

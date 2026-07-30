@@ -1,3 +1,5 @@
+import argparse
+
 import paths
 from dataset import config
 from dataset.utils import (
@@ -8,6 +10,16 @@ from dataset.utils import (
     save_pivot_and_bar_plot,
     save_split_files,
 )
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--plots-only",
+        action="store_true",
+        help="Regenerate metadata tables and plots without overwriting existing split files.",
+    )
+    return parser.parse_args()
 
 
 def print_warnings(df):
@@ -33,6 +45,7 @@ def print_warnings(df):
 
 
 def main():
+    args = parse_args()
     df = load_fasta_records(paths.genomes_dir, include_country=True, with_index=True)
     print(f"\nLoaded records: {len(df)}")
 
@@ -73,7 +86,9 @@ def main():
         no_legend_plot_path=paths.stats_dir / "dengue_geographical_distribution_by_continent_no_legend.png",
     )
 
-    if config.GENERATE_SPLITS:
+    if args.plots_only:
+        print("\n--plots-only: existing geographical split files were not modified.")
+    elif config.GENERATE_SPLITS:
         split_df = build_leave_one_group_out_split(
             df=df,
             group_col="Continent",
