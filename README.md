@@ -165,7 +165,7 @@ The workflow supports the following analysis steps:
 - overall XAI profiles;
 - optional quantitative report generation.
 
-Scripts in `classifier/workflow/scripts/` follow the main workflow order, while scripts in `classifier/workflow/reports/` generate quantitative reports and paper-level summary figures.
+Scripts in `classifier/workflow/scripts/` follow the main workflow order, while scripts in `classifier/workflow/reports/` generate quantitative reports and paper-level summary figures. Prediction-level model comparisons are documented in `classifier/workflow/reports/PERFORMANCE_STATISTICS.md`.
 
 ## Reports and paper figures
 
@@ -181,7 +181,15 @@ Reports can also be generated individually:
 python classifier/workflow/reports/make_confmat.py
 python classifier/workflow/reports/make_metrics.py --summary median --error-bar minmax --result-table-percent
 python classifier/workflow/reports/make_model_tradeoff.py --summary median --error-bar minmax
+python -m classifier.workflow.reports.make_performance_statistics \
+  --bootstrap-reps 10000 \
+  --permutation-reps 100000
+
+# Rebuild only the Excel workbook from cached CSV outputs.
+python -m classifier.workflow.reports.export_performance_statistics_workbook
 ```
+
+The statistical command writes `Supplementary_File_S3_Model_Performance_Statistics.xlsx` plus analysis-friendly CSV exports. It does not generate a separate Table S3 workbook. The reader-facing primary worksheets are `Benchmark_primary` and `Ablation_primary`; detailed primary, secondary, quality-control, and method fields are retained in the remaining worksheets. The export-only command rewrites the workbook from those cached CSVs without rerunning bootstrap or permutation analyses.
 
 ## Installation check
 

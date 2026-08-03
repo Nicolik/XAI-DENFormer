@@ -66,6 +66,12 @@ set -euo pipefail
 # python classifier/workflow/reports/make_confmat.py
 # python classifier/workflow/reports/make_metrics.py --summary median --error-bar minmax --result-table-percent
 # python classifier/workflow/reports/make_model_tradeoff.py --summary median --error-bar minmax
+# python -m classifier.workflow.reports.make_performance_statistics
+#
+# Final manuscript settings for performance statistics:
+# python -m classifier.workflow.reports.make_performance_statistics \
+#   --bootstrap-reps 10000 \
+#   --permutation-reps 100000
 
 # =============================================================================
 # 6) Optional direct XAI plotting commands

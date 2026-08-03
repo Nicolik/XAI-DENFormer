@@ -48,6 +48,19 @@ def parse_args():
     parser.add_argument('--skip-confmat', action='store_true')
     parser.add_argument('--skip-metrics', action='store_true')
     parser.add_argument('--skip-tradeoff', action='store_true')
+    parser.add_argument('--skip-performance-statistics', action='store_true')
+    parser.add_argument(
+        '--performance-bootstrap-reps',
+        type=int,
+        default=10_000,
+        help='CD-HIT cluster-bootstrap replicates for model-performance comparisons.',
+    )
+    parser.add_argument(
+        '--performance-permutation-reps',
+        type=int,
+        default=100_000,
+        help='Cluster sign-flip permutation replicates for model-performance comparisons.',
+    )
     return parser.parse_args()
 
 
@@ -74,6 +87,14 @@ def main():
             str(REPORTS_DIR / 'make_model_tradeoff.py'),
             '--summary', args.summary,
             '--error-bar', args.error_bar,
+        ])
+
+    if not args.skip_performance_statistics:
+        run_command([
+            sys.executable,
+            str(REPORTS_DIR / 'make_performance_statistics.py'),
+            '--bootstrap-reps', str(args.performance_bootstrap_reps),
+            '--permutation-reps', str(args.performance_permutation_reps),
         ])
 
 
