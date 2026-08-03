@@ -73,6 +73,9 @@ set -euo pipefail
 #   --bootstrap-reps 10000 \
 #   --permutation-reps 100000
 
+# Sequence-length and sequence-quality-only serotype baselines (CPU-only):
+# python -m classifier.workflow.reports.make_sequence_quality_baseline
+#
 # =============================================================================
 # 6) Optional direct XAI plotting commands
 # =============================================================================

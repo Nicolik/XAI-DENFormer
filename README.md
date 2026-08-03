@@ -207,6 +207,16 @@ python -m classifier.workflow.reports.export_performance_statistics_workbook
 
 The statistical command writes `Supplementary_File_S3_Model_Performance_Statistics.xlsx` plus analysis-friendly CSV exports. It does not generate a separate Table S3 workbook. The reader-facing primary worksheets are `Benchmark_primary` and `Ablation_primary`; detailed primary, secondary, quality-control, and method fields are retained in the remaining worksheets. The export-only command rewrites the workbook from those cached CSVs without rerunning bootstrap or permutation analyses.
 
+## Sequence-quality baseline
+
+To test whether serotype can be predicted from sequence length and simple quality/composition variables without nucleotide-order information, run:
+
+```bash
+python -m classifier.workflow.reports.make_sequence_quality_baseline
+```
+
+This CPU-only analysis reuses the existing geographical, temporal, and CD-HIT membership indices, aligns samples with `seq_ids_ohe.txt`, and uses the exact targets from `label_matrix.txt` loaded by the original training/inference workflows. It does not rebuild embeddings or retrain DENFormer. Methods and output details are documented in `classifier/workflow/reports/SEQUENCE_QUALITY_BASELINE.md`.
+
 ## Installation check
 
 After installation, the following commands can be used to verify that the main modules are importable and that the command-line entry points are available:
