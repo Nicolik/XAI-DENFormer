@@ -19,6 +19,22 @@ The repository includes utilities to prepare dengue genome datasets, generate CD
 └── install.sh             # Installation helper
 ```
 
+## Reproducibility map
+
+The main components required to reproduce the reported experiments are organized as follows:
+
+- dataset preparation and one-hot encoding: `dataset/scripts/`;
+- CD-HIT clustering and cluster-aware fold generation: `cdhit/scripts/`;
+- model and training hyperparameters: `classifier/workflow/config.py`;
+- experiment selection and workflow configuration: `classifier/workflow/workflow.py`;
+- training entry point: `classifier/workflow/scripts/01_run_train.py`;
+- standard inference entry point: `classifier/workflow/scripts/02_run_inference.py`;
+- attention, Gradient × Input, embedding, and aggregation analyses: `classifier/workflow/scripts/`;
+- software environment: `environment.yml`;
+- complete execution order and command examples: `README.md` and `pipeline.sh`.
+
+Raw sequence data are not redistributed and must be obtained from the original repositories in accordance with their access and redistribution requirements.
+
 ## Data availability and expected inputs
 
 This repository does not redistribute the raw dengue genome data used in the associated experiments. In particular, sequences obtained from databases with access or redistribution restrictions must be downloaded by users from the original sources and used according to the corresponding terms of use.
