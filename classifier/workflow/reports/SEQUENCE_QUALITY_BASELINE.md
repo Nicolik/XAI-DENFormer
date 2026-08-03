@@ -40,4 +40,4 @@ The detailed reader-facing file is `Sequence_Quality_Baseline.xlsx`. The Word-re
 
 ## Interpretation
 
-Low performance relative to the sequence models supports the conclusion that length and simple quality/composition variables are insufficient to explain serotype classification on their own. This analysis does not, by itself, prove that a sequence model never uses padding.
+Length-only and N-only baselines showed limited predictive performance. GC-containing baselines captured substantial serotype-associated information but remained below the genome-based models. These analyses show that simple global properties alone do not account for the reported classification performance; they do not prove that the sequence models never use padding or non-ACGT positions.

@@ -215,7 +215,7 @@ To test whether serotype can be predicted from sequence length and simple qualit
 python -m classifier.workflow.reports.make_sequence_quality_baseline
 ```
 
-This CPU-only analysis reuses the existing geographical, temporal, and CD-HIT membership indices, aligns samples with `seq_ids_ohe.txt`, and uses the exact targets from `label_matrix.txt` loaded by the original training/inference workflows. It does not rebuild embeddings or retrain DENFormer. Methods and output details are documented in `classifier/workflow/reports/SEQUENCE_QUALITY_BASELINE.md`.
+This CPU-only analysis reuses the existing geographical, temporal, and CD-HIT membership indices, aligns samples with `seq_ids_ohe.txt`, and uses the exact targets from `label_matrix.txt` loaded by the original training/inference workflows. It does not rebuild embeddings or retrain DENFormer. Length-only and N-only baselines test simple padding- and ambiguity-associated cues, while GC-containing models quantify information carried by global nucleotide composition. The analysis does not establish that neural sequence models never use zero-coded positions. Methods and output details are documented in `classifier/workflow/reports/SEQUENCE_QUALITY_BASELINE.md`.
 
 ## Installation check
 
