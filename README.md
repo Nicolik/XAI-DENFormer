@@ -1,6 +1,6 @@
-# DENFormer
+# XAI-DENFormer
 
-DENFormer is a research codebase for dengue virus serotype classification from complete genomic sequences and for downstream explainability analyses of learned genomic signals.
+XAI-DENFormer is a research codebase for dengue virus serotype classification from complete genomic sequences and for downstream explainability analyses of learned genomic signals.
 
 The repository includes utilities to prepare dengue genome datasets, generate CD-HIT cluster-aware splits, run multiple sequence alignment (MSA)-based variability analyses, train and evaluate classification models, compute attention- and gradient-based explanation profiles, and generate the quantitative and XAI panels used for paper-level reporting.
 
@@ -46,7 +46,7 @@ export DENFORMER_DATA_DIR=/path/to/data
 ```
 
 If the variable is not set, the public version falls back to a local `data/` directory.
-Local deployments can customize paths by setting DENFORMER_DATA_DIR or by adapting paths.py.
+Local deployments can customize paths by setting `DENFORMER_DATA_DIR` or by adapting `paths.py`.
 
 ## Installation
 
@@ -229,7 +229,9 @@ python -m classifier.workflow.reports.run_reports --help
 
 ## Citation
 
-If you use this repository for research, please cite the associated paper.
+Citation metadata are provided in [`CITATION.cff`](CITATION.cff). GitHub displays the recommended citation through the repository's **Cite this repository** control.
+
+For reproducible scientific use, cite the version-specific Zenodo record corresponding to the GitHub Release used in the analysis. The release associated with the Scientific Reports manuscript is version `1.0.0`; its DOI should be taken from the Zenodo record after the release has been archived.
 
 ## License
 

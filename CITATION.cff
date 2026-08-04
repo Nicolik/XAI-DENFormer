@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the archived software release."
+type: software
+title: "XAI-DENFormer"
+version: 1.0.0
+license: GPL-3.0
+repository-code: "https://github.com/Nicolik/XAI-DENFormer"
+url: "https://github.com/Nicolik/XAI-DENFormer"
+abstract: >-
+  XAI-DENFormer is a research software framework for dengue virus serotype
+  classification from complete genomic sequences using chunk-based Transformer
+  models and for downstream explainability analyses of learned genomic signals.
+keywords:
+  - dengue virus
+  - genomic sequences
+  - transformer
+  - deep learning
+  - explainable artificial intelligence
+authors:
+  - family-names: "Galeone"
+    given-names: "Francesca"
+    orcid: "https://orcid.org/0009-0009-5259-0640"
+  - family-names: "Altini"
+    given-names: "Nicola"
+    orcid: "https://orcid.org/0000-0001-7353-4968"
+  - family-names: "Toscanelli"
+    given-names: "Mariapia"
+  - family-names: "Cacchiarelli"
+    given-names: "Davide"
+  - family-names: "De Filippis"
+    given-names: "Anna"
+  - family-names: "Galdiero"
+    given-names: "Massimiliano"
+  - family-names: "Brunetti"
+    given-names: "Antonio"
+    orcid: "https://orcid.org/0000-0002-1934-0983"
+  - family-names: "Zaccaria"
+    given-names: "Gian Maria"
+    orcid: "https://orcid.org/0000-0001-5643-5917"
+  - family-names: "Bevilacqua"
+    given-names: "Vitoantonio"
+    orcid: "https://orcid.org/0000-0002-3088-0788"
